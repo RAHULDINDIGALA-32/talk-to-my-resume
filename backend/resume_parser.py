@@ -1,4 +1,4 @@
-from llm_utils import parse_query
+from llm_utils import call_llm
 from pydantic import BaseModel
 
 class experience(BaseModel):
@@ -53,6 +53,9 @@ def parse_resume(resume_text: str):
     RESUME:
     {resume_text}   
     """
-
-    parsed_resume = parse_query(system_prompt, user_prompt)
+    response_format = {
+        "type": "json_object"
+    }
+    
+    parsed_resume = call_llm(system_prompt, user_prompt, response_format)
     return parsed_resume

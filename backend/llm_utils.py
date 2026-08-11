@@ -15,7 +15,7 @@ if not my_api_key:
 client = Groq(api_key=my_api_key)
 DEFAULT_MODEL = "openai/gpt-oss-120b"
 
-def parse_query(system_prompt:str, query_prompt: str, response_format={"type": "json_object"}):
+def call_llm(system_prompt:str, query_prompt: str, response_format=None):
 
    messages = [
         {"role": "system", "content": system_prompt},
@@ -23,11 +23,15 @@ def parse_query(system_prompt:str, query_prompt: str, response_format={"type": "
     ]
 
    try:
-       response = client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages,
-            response_format=response_format
-        )
+       kwArgs = {
+            "model": DEFAULT_MODEL,
+            "messages": messages
+       }
+
+       if response_format is not None:
+            kwArgs["response_format"] = response_format 
+       
+       response = client.chat.completions.create(**kwArgs)
        llm_answer = response.choices[0].message.content
 
        #raw_content = response.choices[0].message.content
